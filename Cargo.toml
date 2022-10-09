@@ -16,6 +16,7 @@ travis-ci = { repository = "a1ien/rusb" }
 
 [features]
 vendored = [ "libusb1-sys/vendored" ]
+nolink = ["libusb1-sys/nolink"]
 
 [workspace]
 members = ["libusb1-sys"]

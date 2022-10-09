@@ -30,6 +30,7 @@ fn find_libusb_pkg(_statik: bool) -> bool {
     }
 }
 
+#[allow(dead_code)]
 fn get_macos_major_version() -> Option<usize> {
     if !cfg!(target_os = "macos") {
         return None;
@@ -199,6 +200,10 @@ fn make_source() {
 }
 
 fn main() {
+    if cfg!(feature = "nolink") {
+        return
+    }
+
     println!("cargo:rerun-if-env-changed=LIBUSB_STATIC");
     let statik = {
         if cfg!(target_os = "macos") {
