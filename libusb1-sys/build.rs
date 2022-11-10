@@ -1,5 +1,7 @@
 use std::{env, fs, path::PathBuf};
 
+use cargo::{util::ConfigValue, Config};
+
 static VERSION: &str = "1.0.24";
 
 fn link(name: &str, bundled: bool) {
@@ -79,6 +81,20 @@ fn find_libusb_pkg(statik: bool) -> bool {
             false
         }
     }
+}
+
+fn get_linker_path() -> Option<String> {
+    let target = std::env::var("TARGET").unwrap();
+    let cfg = Config::default().unwrap().load_values().unwrap();
+
+    if let Some(ConfigValue::Table(target_configs, _)) = cfg.get("target") {
+        if let Some(ConfigValue::Table(target_cfg, _)) = target_configs.get(&target) {
+            if let Some(ConfigValue::String(linker, _)) = target_cfg.get("linker") {
+                return Some(linker.to_owned());
+            }
+        }
+    }
+    return None
 }
 
 fn make_source() {
@@ -202,6 +218,10 @@ fn make_source() {
 fn main() {
     if cfg!(feature = "nolink") {
         return
+    }
+
+    if let Some(linker) = get_linker_path() {
+        std::env::set_var("CC", linker);
     }
 
     println!("cargo:rerun-if-env-changed=LIBUSB_STATIC");
