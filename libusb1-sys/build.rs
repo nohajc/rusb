@@ -221,7 +221,17 @@ fn main() {
     }
 
     if let Some(linker) = get_linker_path() {
-        std::env::set_var("CC", linker);
+        let linker_path = PathBuf::from(&linker);
+        let linker_dir = linker_path.parent().unwrap();
+        let path = std::env::var("PATH").ok();
+
+        let new_path = if let Some(path) = path {
+            PathBuf::from(env::join_paths([linker_dir, &PathBuf::from(&path)]).unwrap())
+        } else {
+            linker_dir.to_owned()
+        };
+        std::env::set_var("CC", &linker);
+        std::env::set_var("PATH", new_path);
     }
 
     println!("cargo:rerun-if-env-changed=LIBUSB_STATIC");
