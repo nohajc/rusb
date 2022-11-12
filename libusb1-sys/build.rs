@@ -223,10 +223,16 @@ fn main() {
     if let Some(linker) = get_linker_path() {
         let linker_path = PathBuf::from(&linker);
         let linker_dir = linker_path.parent().unwrap();
-        let path = std::env::var("PATH").ok();
+        let path = std::env::var_os("PATH");
 
         let new_path = if let Some(path) = path {
-            PathBuf::from(env::join_paths([linker_dir, &PathBuf::from(&path)]).unwrap())
+            let mut paths = env::split_paths(&path).collect::<Vec<_>>();
+            paths.push(linker_dir.to_owned());
+            let paths_string = match env::join_paths(paths) {
+                Ok(paths_string) => paths_string,
+                Err(e) => panic!("error joining paths '{}' + '{}': {}", linker_dir.display(), path.to_string_lossy(), e)
+            };
+            PathBuf::from(paths_string)
         } else {
             linker_dir.to_owned()
         };
