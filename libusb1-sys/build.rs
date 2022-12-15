@@ -22,7 +22,12 @@ pub fn link_framework(name: &str) {
     println!("cargo:rustc-link-lib=framework={}", name);
 }
 
-#[cfg(target_env = "msvc")]
+#[cfg(not(feature = "link"))]
+fn find_libusb_pkg(_statik: bool) -> bool {
+    false
+}
+
+#[cfg(all(target_env = "msvc", feature = "link"))]
 fn find_libusb_pkg(_statik: bool) -> bool {
     match vcpkg::Config::new().find_package("libusb") {
         Ok(_) => true,
@@ -49,7 +54,7 @@ fn get_macos_major_version() -> Option<usize> {
     Some(major)
 }
 
-#[cfg(not(target_env = "msvc"))]
+#[cfg(all(not(target_env = "msvc"), feature = "link"))]
 fn find_libusb_pkg(statik: bool) -> bool {
     // https://github.com/rust-lang/rust/issues/96943
     let needs_rustc_issue_96943_workaround: bool = get_macos_major_version()
@@ -104,6 +109,10 @@ fn get_linker_path() -> Option<String> {
     None
 }
 
+#[cfg(not(feature = "link"))]
+fn make_source() {}
+
+#[cfg(feature = "link")]
 fn make_source() {
     let libusb_source = PathBuf::from("libusb");
 
