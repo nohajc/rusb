@@ -34,7 +34,6 @@ build = "build.rs"
 travis-ci = { repository = "a1ien/libusb1-sys" }
 
 [features]
-default = ["link"]
 vendored = []
 link = ["cargo", "cc", "pkg-config"]
 
@@ -45,6 +44,6 @@ libc = "0.2"
 vcpkg = "0.2"
 
 [build-dependencies]
-cargo = { version = "0.66.0", optional =  true }
-cc = { version = "1.0", optional =  true }
-pkg-config = { version = "0.3", optional =  true }
+cargo = { version = "0.66.0", optional = true }
+cc = { version = "1.0", optional = true }
+pkg-config = { version = "0.3", optional = true }
