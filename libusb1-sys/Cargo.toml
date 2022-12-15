@@ -34,8 +34,9 @@ build = "build.rs"
 travis-ci = { repository = "a1ien/libusb1-sys" }
 
 [features]
+default = ["link"]
 vendored = []
-nolink = []
+link = ["cargo", "cc", "pkg-config"]
 
 [dependencies]
 libc = "0.2"
@@ -43,7 +44,7 @@ libc = "0.2"
 [target.'cfg(target_env = "msvc")'.build-dependencies]
 vcpkg = "0.2"
 
-[target.'cfg(not(feature = "nolink"))'.build-dependencies]
-cargo = "0.66.0"
-cc = "1.0"
-pkg-config = "0.3"
+[build-dependencies]
+cargo = { version = "0.66.0", optional =  true }
+cc = { version = "1.0", optional =  true }
+pkg-config = { version = "0.3", optional =  true }

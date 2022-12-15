@@ -15,8 +15,9 @@ build = "build.rs"
 travis-ci = { repository = "a1ien/rusb" }
 
 [features]
+default = ["link"]
 vendored = [ "libusb1-sys/vendored" ]
-nolink = ["libusb1-sys/nolink"]
+link = ["libusb1-sys/link"]
 
 [workspace]
 members = ["libusb1-sys"]

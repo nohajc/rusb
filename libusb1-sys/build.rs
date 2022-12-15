@@ -1,6 +1,6 @@
 use std::{env, fs, path::PathBuf};
 
-#[cfg(not(feature = "nolink"))]
+#[cfg(feature = "link")]
 use cargo::{util::ConfigValue, Config};
 
 static VERSION: &str = "1.0.24";
@@ -84,7 +84,7 @@ fn find_libusb_pkg(statik: bool) -> bool {
     }
 }
 
-#[cfg(not(feature = "nolink"))]
+#[cfg(feature = "link")]
 fn get_linker_path() -> Option<String> {
     let target = std::env::var("TARGET").unwrap();
     let cfg = Config::default().unwrap().load_values().unwrap();
@@ -99,7 +99,7 @@ fn get_linker_path() -> Option<String> {
     return None
 }
 
-#[cfg(feature = "nolink")]
+#[cfg(not(feature = "link"))]
 fn get_linker_path() -> Option<String> {
     None
 }
@@ -223,7 +223,7 @@ fn make_source() {
 }
 
 fn main() {
-    if cfg!(feature = "nolink") {
+    if !cfg!(feature = "link") {
         return
     }
 
