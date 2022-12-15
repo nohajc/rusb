@@ -1,3 +1,5 @@
+#![cfg(not(feature = "nolink"))]
+
 use std::{env, fs, path::PathBuf};
 
 use cargo::{util::ConfigValue, Config};
